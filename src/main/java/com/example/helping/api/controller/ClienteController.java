@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.helping.api.model.Cliente;
 import com.example.helping.domain.repository.ClienteInterface;
+import com.example.helping.domain.service.CadastroClienteService;
 
 @RestController
 @RequestMapping("/clientes")
@@ -29,6 +30,9 @@ public class ClienteController {
 
 	@Autowired
 	private ClienteInterface clienteInterface;
+	
+	@Autowired
+	private CadastroClienteService cadastroClienteService;
 
 	// Metodo para listar todos os Clientes
 	@GetMapping
@@ -52,7 +56,7 @@ public class ClienteController {
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public Cliente adicionar(@Valid @RequestBody Cliente cliente) {
-		return clienteInterface.save(cliente);
+		return cadastroClienteService.salvar(cliente);
 	}
 
 	// Metodod para atualizar Cliente ja existente
@@ -63,7 +67,7 @@ public class ClienteController {
 			return ResponseEntity.notFound().build();
 		}
 		cliente.setId(clienteId);
-		cliente = clienteInterface.save(cliente);
+		cliente = cadastroClienteService.salvar(cliente);
 
 		return ResponseEntity.ok(cliente);
 	}
@@ -74,7 +78,7 @@ public class ClienteController {
 		if (!clienteInterface.existsById(clienteId)) {
 			return ResponseEntity.notFound().build();
 		}
-		clienteInterface.deleteById(clienteId);
+		cadastroClienteService.deleteForId(clienteId);
 		return ResponseEntity.noContent().build();
 	}
 }
